@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, ScrollView, useWindowDimensions } from 'react-native';
 import { useSelectContext } from './select';
 import type { SelectContentProps } from './types';
@@ -8,8 +8,22 @@ export const SelectContent = React.forwardRef<
   React.ElementRef<typeof View>,
   SelectContentProps
 >(({ className, children, ...props }, ref) => {
-  const { triggerLayout } = useSelectContext();
+  const { isOpen, triggerLayout, selectedItemLayoutY } = useSelectContext();
   const { height: windowHeight } = useWindowDimensions();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const hasScrolledToSelectionRef = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      hasScrolledToSelectionRef.current = false;
+      return;
+    }
+    if (hasScrolledToSelectionRef.current || selectedItemLayoutY == null) return;
+    hasScrolledToSelectionRef.current = true;
+    // Center the selected row instead of pinning it to the top, so the picker
+    // reopens showing a bit of surrounding context rather than the value edge-on.
+    scrollViewRef.current?.scrollTo({ y: Math.max(selectedItemLayoutY - 40, 0), animated: false });
+  }, [isOpen, selectedItemLayoutY]);
 
   if (!triggerLayout) {
     return null;
@@ -30,6 +44,7 @@ export const SelectContent = React.forwardRef<
       }}
     >
       <ScrollView
+        ref={scrollViewRef}
         bounces={false}
         showsVerticalScrollIndicator
         style={{ maxHeight: maxDropdownHeight }}

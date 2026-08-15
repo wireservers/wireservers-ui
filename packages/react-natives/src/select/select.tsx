@@ -65,6 +65,7 @@ export const Select = React.forwardRef<
     const [internalLabel, setInternalLabel] = useState('');
     const [registeredLabels, setRegisteredLabels] =
       useState<Record<string, string>>({});
+    const [itemLayouts, setItemLayouts] = useState<Record<string, number>>({});
     const [internalSearchValue, setInternalSearchValue] =
       useState(defaultSearchValue);
     const [triggerLayout, setTriggerLayout] = useState<TriggerLayout | null>(null);
@@ -239,6 +240,15 @@ export const Select = React.forwardRef<
       [],
     );
 
+    const registerItemLayout = useCallback((value: string, y: number) => {
+      setItemLayouts((current) =>
+        current[value] === y ? current : { ...current, [value]: y },
+      );
+    }, []);
+
+    const selectedItemLayoutY =
+      selectedValue != null ? (itemLayouts[selectedValue] ?? null) : null;
+
     return (
       <SelectContext.Provider
         value={{
@@ -255,6 +265,7 @@ export const Select = React.forwardRef<
           isDisabled,
           isInvalid,
           triggerLayout,
+          selectedItemLayoutY,
           onOpen,
           onClose,
           onValueChange,
@@ -263,6 +274,7 @@ export const Select = React.forwardRef<
           isValueSelected,
           shouldShowItem,
           registerItem,
+          registerItemLayout,
           setTriggerLayout,
         }}
       >

@@ -35,6 +35,7 @@ export interface SelectContextValue {
   isDisabled: boolean;
   isInvalid: boolean;
   triggerLayout: TriggerLayout | null;
+  selectedItemLayoutY: number | null;
   onOpen: () => void;
   onClose: () => void;
   onValueChange: (value: string, label: string) => void;
@@ -43,6 +44,7 @@ export interface SelectContextValue {
   isValueSelected: (value: string) => boolean;
   shouldShowItem: (value: string, label: string) => boolean;
   registerItem: (value: string, label: string) => void;
+  registerItemLayout: (value: string, y: number) => void;
   setTriggerLayout: (layout: TriggerLayout) => void;
 }
 

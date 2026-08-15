@@ -32,6 +32,7 @@ export const SelectItem = React.forwardRef<
     isValueSelected,
     shouldShowItem,
     registerItem,
+    registerItemLayout,
   } = useSelectContext();
 
   const isSelected = isValueSelected(value);
@@ -68,6 +69,10 @@ export const SelectItem = React.forwardRef<
           disabled: isDisabled,
         }}
         {...props}
+        onLayout={(event) => {
+          registerItemLayout(value, event.nativeEvent.layout.y);
+          props.onLayout?.(event);
+        }}
       >
         {children ?? (
           <>
